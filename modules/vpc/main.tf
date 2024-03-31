@@ -13,6 +13,47 @@ resource "aws_vpc" "infra_vpc" {
   }
 }
 
+resource "aws_security_group" "infra_vpc_sg" {
+  name        = "${var.environment}_infra_vpc_sg"
+  description = "Security group for ${var.environment} environment"
+  vpc_id      = aws_vpc.infra_vpc.id
+
+  tags = {
+    Name = "${var.environment}_infra_vpc_sg"
+    Env  = var.environment
+  }
+}
+
+resource "aws_security_group_rule" "http_ingress" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.infra_vpc_sg.id
+  description       = "Allow inbound HTTP traffic"
+}
+
+resource "aws_security_group_rule" "http_ingress_2" {
+  type              = "ingress"
+  from_port         = 8065
+  to_port           = 8065
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.infra_vpc_sg.id
+  description       = "Allow inbound HTTP traffic"
+}
+
+resource "aws_security_group_rule" "https_ingress" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.infra_vpc_sg.id
+  description       = "Allow inbound HTTPS traffic"
+}
+
 resource "aws_internet_gateway" "infra_igw" {
   vpc_id = aws_vpc.infra_vpc.id
 

@@ -19,6 +19,25 @@ resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  # 修正する
-  bucket = "okmtdev-tfstate"
+  bucket = "okmtdev-infra-tfstate"
+  tags = {
+    Name = "okmtdev-infra-tfstate"
+    Env  = "Prod"
+  }
+}
+
+resource "aws_dynamodb_table" "terraform_state_locks" {
+  name         = "okmtdev-infra-tfstate-locks"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+
+  tags = {
+    Name = "okmtdev-infra-tfstate-locks"
+    Env  = "Prod"
+  }
 }
