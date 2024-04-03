@@ -234,4 +234,14 @@ sudo docker compose -f docker-compose.yml -f docker-compose.nginx.yml down
 
 # Mail server
 
+Amazon SES
+
+- Set SMTP Username to [YOUR_SMTP_USERNAME]
+- Set SMTP Password to [YOUR_SMTP_PASSWORD]
+- Set SMTP Server to email-smtp.ap-northeast-1.amazonaws.com
+- Set SMTP Port to 465
+- Set Connection Security to TLS
+
 - [メールサーバ作成 | Qiita](https://qiita.com/tumu1632/items/7f6106ec872a89b47f49)
+
+mattermost-1 | {"timestamp":"2024-04-01 04:18:32.410 +09:00","level":"warn","msg":"Failed to send welcome email on create user with inviteId","caller":"app/user.go:165","path":"/api/v4/users","request_id":"uuwjkhxgjpy15djxuzku3kkmgw","ip_addr":"172.20.0.1","user_id":"","method":"POST","error":"authentication failed: 535 Authentication Credentials Invalid"}

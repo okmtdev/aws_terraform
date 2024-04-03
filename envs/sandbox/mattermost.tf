@@ -40,6 +40,10 @@ resource "aws_instance" "sandbox_ec2" {
   key_name               = aws_key_pair.aws_key.id
   instance_type          = "t2.micro"
 
+  lifecycle {
+    ignore_changes = [ami]
+  }
+
   tags = {
     Name = "${var.environment}_mattermost_instance"
   }
