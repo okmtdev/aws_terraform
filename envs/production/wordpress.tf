@@ -66,11 +66,12 @@ resource "aws_db_subnet_group" "wordpress" {
 }
 
 resource "aws_db_instance" "wordpress_db" {
-  identifier              = "wp-mysql"
-  allocated_storage       = 5
-  engine                  = "mysql"
-  engine_version          = "5.6.22"
-  instance_class          = "db.t2.micro"
+  identifier        = "wordpress-mysql"
+  allocated_storage = 5
+  engine            = "mysql"
+  # https://docs.aws.amazon.com/ja_jp/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html
+  engine_version          = "8.0.36"
+  instance_class          = "db.t3.micro"
   storage_type            = "gp2"
   username                = var.wordpress_db_username
   password                = var.wordpress_db_password
@@ -80,7 +81,7 @@ resource "aws_db_instance" "wordpress_db" {
 }
 
 resource "aws_security_group" "wordpress_db_sg" {
-  name        = "WP-DB"
+  name        = "wordpress db sg"
   description = "WordPress MySQL Security Group"
   vpc_id      = module.vpc.infra_vpc_id
 
