@@ -27,15 +27,13 @@ resource "aws_key_pair" "aws_key" {
 resource "aws_db_subnet_group" "wordpress_db_subnet_group" {
   name        = "${var.service}-wordpress-db-subnet"
   description = "db subnets for ${var.service}"
-  #subnet_ids  = [module.vpc.infra_subnet_1a_id, module.vpc.infra_subnet_1c_id]
-  subnet_ids = var.subnet_ids
+  subnet_ids  = var.subnet_ids
 }
 
 resource "aws_db_instance" "wordpress_db" {
-  identifier        = "${var.service}-wordpress-mysql"
-  allocated_storage = 5
-  engine            = "mysql"
-  # https://docs.aws.amazon.com/ja_jp/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html
+  identifier              = "${var.service}-wordpress-mysql"
+  allocated_storage       = 5
+  engine                  = "mysql"
   engine_version          = "8.0.36"
   instance_class          = "db.t3.micro"
   storage_type            = "gp2"

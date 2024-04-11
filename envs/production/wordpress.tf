@@ -66,10 +66,9 @@ resource "aws_db_subnet_group" "wordpress" {
 }
 
 resource "aws_db_instance" "wordpress_db" {
-  identifier        = "wordpress-mysql"
-  allocated_storage = 5
-  engine            = "mysql"
-  # https://docs.aws.amazon.com/ja_jp/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html
+  identifier              = "wordpress-mysql"
+  allocated_storage       = 5
+  engine                  = "mysql"
   engine_version          = "8.0.36"
   instance_class          = "db.t3.micro"
   storage_type            = "gp2"
@@ -87,6 +86,10 @@ resource "aws_security_group" "wordpress_db_sg" {
 
   tags = {
     Name = "${var.environment}_wordpress_sg"
+  }
+
+  lifecycle {
+    ignore_changes = all
   }
 }
 

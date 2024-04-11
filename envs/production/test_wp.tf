@@ -7,5 +7,5 @@ module "test_wordpress" {
   subnet_id       = module.vpc.infra_subnet_1a_id
   db_username     = var.test_wordpress_db_username
   db_password     = var.test_wordpress_db_password
-  subnet_ids      = [aws_security_group.infra_vpc_sg.id, aws_security_group.wordpress_ec2_sg.id]
+  subnet_ids      = [module.vpc.infra_subnet_1a_id, module.vpc.infra_subnet_1c_id]
 }
