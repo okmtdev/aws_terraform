@@ -245,3 +245,111 @@ Amazon SES
 - [メールサーバ作成 | Qiita](https://qiita.com/tumu1632/items/7f6106ec872a89b47f49)
 
 mattermost-1 | {"timestamp":"2024-04-01 04:18:32.410 +09:00","level":"warn","msg":"Failed to send welcome email on create user with inviteId","caller":"app/user.go:165","path":"/api/v4/users","request_id":"uuwjkhxgjpy15djxuzku3kkmgw","ip_addr":"172.20.0.1","user_id":"","method":"POST","error":"authentication failed: 535 Authentication Credentials Invalid"}
+
+# WordPress の環境構築
+
+```
+$ sudo yum install httpd -y
+
+$ sudo systemctl start httpd
+
+$ sudo systemctl enable httpd.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service.
+
+$ sudo usermod -a -G apache ec2-user
+$ sudo chown -R ec2-user:apache /var/www
+
+
+$ sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
+$ find /var/www -type f -exec sudo chmod 0664 {} \;
+
+
+$ sudo amazon-linux-extras enable php8.2
+$ sudo yum install php php-gd php-mysqlnd php-xmlrpc -y
+```
+
+phpMyAdmin（利用しない場合は不要）
+
+```
+$ sudo yum install php-mbstring php-fpm -y
+$ sudo systemctl restart httpd
+
+$ cd /var/www/html
+$ wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+$ mkdir phpMyAdmin && tar -xvzf phpMyAdmin-latest-all-languages.tar.gz -C phpMyAdmin --strip-components 1
+$ rm phpMyAdmin-latest-all-languages.tar.gz
+```
+
+DB Setting
+
+```
+mysql
+```
+
+WordPress 用データベースを作ろう
+
+```
+$ sudo yum remove -y mariadb-*
+$ sudo yum localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-11.noarch.rpm
+$ sudo yum install -y --enablerepo=mysql80-community mysql-community-server
+$ sudo yum install -y --enablerepo=mysql80-community mysql-community-devel
+$ sudo touch /var/log/mysqld.log
+$ mysql -h ${DB_ENDPOINT} -u user -p
+mysql> show databases;
+mysql> CREATE DATABASE `wordpress`;
+```
+
+`${DB_ENDPOINT}` は AWS Console から確認できる
+
+![rds_endpoint](./docs/images/rds_endpoint.png)
+
+WordPress のインストールと設定
+
+```
+$ cd
+$ wget https://wordpress.org/latest.tar.gz
+$ tar -xzvf latest.tar.gz
+$ cp wordpress/wp-config-sample.php wordpress/wp-config.php
+$ vim wordpress/wp-config.php
+
+  define( 'DB_NAME', 'database_name_here' ); -> 修正
+  define( 'DB_USER', 'username_here' ); -> 修正
+  define( 'DB_PASSWORD', 'password_here' ); -> 修正
+  define( 'DB_HOST', 'host_here' ); -> 修正
+
+$ mkdir /var/www/html/blog
+$ cp -r wordpress/* /var/www/html/blog/
+
+$ sudo vim /etc/httpd/conf/httpd.conf
+
+<Directory "/var/www/html">
+
+   AllowOverride None -> All
+
+</Directory>
+
+
+$ sudo chown -R apache /var/www
+$ sudo chgrp -R apache /var/www
+$ sudo chmod 2775 /var/www
+$ find /var/www -type d -exec sudo chmod 2775 {} \;
+$ sudo systemctl restart httpd
+```
+
+open `http://[パブリック DNS]/blog/wp-admin/install.php`
+
+![wp1](./docs/images/wp1.png)
+![wp2](./docs/images/wp2.png)
+![wp3](./docs/images/wp3.png)
+
+もし DB 接続ユーザを設定する場合
+
+```
+CREATE USER 'wordpress-user'@'localhost' IDENTIFIED BY 'your_strong_password';
+CREATE DATABASE `wordpress-db`;
+GRANT ALL PRIVILEGES ON `wordpress-db`.* TO "wordpress-user"@"localhost";
+FLUSH PRIVILEGES;
+```
+
+- [【超初心者向け】WordPress を Amazon EC2 インスタンスにインストールする | Qiita](https://qiita.com/moomindani/items/9968df0d4396564bf74c)
+- [Terraform だけで AWS 環境に WordPress を構築する | Qiita](https://qiita.com/toshihirock/items/6a46fcba165a0b34a1f4)
