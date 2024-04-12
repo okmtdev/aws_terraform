@@ -353,3 +353,7 @@ FLUSH PRIVILEGES;
 
 - [【超初心者向け】WordPress を Amazon EC2 インスタンスにインストールする | Qiita](https://qiita.com/moomindani/items/9968df0d4396564bf74c)
 - [Terraform だけで AWS 環境に WordPress を構築する | Qiita](https://qiita.com/toshihirock/items/6a46fcba165a0b34a1f4)
+
+改善点として SessionManager でログインできた方が良い
+
+- [ ] AmazonSSMManagedInstanceCore Policy を含む Role を EC2 に付与するように module を更新する
