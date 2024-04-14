@@ -8,6 +8,8 @@ module "vpc" {
 }
 
 module "ecr" {
-  source      = "../../modules/ecr"
+  source = "../../modules/ecr"
+  # [TODO] fix
+  repository  = "${var.environment}-top-news-to-mm"
   environment = var.environment
 }
