@@ -1,7 +1,5 @@
-variable "environment" {}
-
 resource "aws_ecr_repository" "infra_ecr" {
-  name                 = "${var.environment}_infra_ecr"
+  name                 = var.repository
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {

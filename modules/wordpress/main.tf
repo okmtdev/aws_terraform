@@ -64,6 +64,24 @@ resource "aws_security_group" "wordpress_sg" {
   }
 }
 
+resource "aws_security_group_rule" "http_ingress_80" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.wordpress_sg.id
+}
+
+resource "aws_security_group_rule" "https_ingress_443" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.wordpress_sg.id
+}
+
 resource "aws_security_group_rule" "wordpress_ingress" {
   type                     = "ingress"
   from_port                = 3306
