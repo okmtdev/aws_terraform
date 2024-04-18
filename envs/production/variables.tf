@@ -17,3 +17,7 @@ variable "wordpress_db_username" {
 variable "wordpress_db_password" {
   default = "password"
 }
+
+variable "zone_id" {
+  default = "Z06637531YBCMH55FF8KU" # okmtdev.com
+}
