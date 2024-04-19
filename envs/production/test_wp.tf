@@ -14,6 +14,10 @@ resource "aws_route53_record" "www_record" {
   zone_id = var.zone_id
   name    = "www.okmtdev.com"
   type    = "A"
-  ttl     = "300"
-  records = [module.test_wordpress.wordpress_eip_id]
+
+  alias {
+    name                   = "dualstack.test-wordpress-lb-1403664754.ap-northeast-1.elb.amazonaws.com"
+    zone_id                = var.elb_zone_id
+    evaluate_target_health = true
+  }
 }
